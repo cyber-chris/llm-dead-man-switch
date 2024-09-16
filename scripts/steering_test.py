@@ -13,10 +13,10 @@ DEVICE = 'cuda' if torch.cuda.is_available() else 'cpu'
 
 def generate_steered(model, prompt):
     sampling_kwargs = {
-        "do_sample": True,
+        "do_sample": False,
         # "top_k": 50,
         # "top_p": 0.95,
-        "temperature": 0.5,
+        # "temperature": 0.5,
     }
 
     outputs = []
