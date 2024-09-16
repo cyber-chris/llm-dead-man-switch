@@ -1,5 +1,7 @@
 import torch
 from sae_lens import SAE, HookedSAETransformer
+from transformers import AutoModelForCausalLM, BitsAndBytesConfig
+from transformer_lens import HookedTransformer
 import pandas as pd
 
 from activation_additions.prompt_utils import get_x_vector
@@ -14,19 +16,22 @@ def generate_with_dms(model: HookedSAETransformer, prompt: str, sae: SAE) -> str
     """
 
     sampling_kwargs = {
-        "do_sample": True,
-        "top_k": 50,
-        "top_p": 0.95,
-        "temperature": 0.7,
+        "do_sample": False,
+        # "top_k": 50,
+        # "top_p": 0.95,
+        # "temperature": 0.7,
     }
 
     if should_trigger_refusal(model, prompt, sae):
         print("NOTE: Triggering refusal")
+
+        coeff = 8
+        act_name = 8
         x_vectors = get_x_vector(
-            prompt1="No",
-            prompt2="Yes",
-            coeff=4,
-            act_name=6,
+            prompt1="I'm sorry, but I cannot",
+            prompt2="Sure, I can help with that",
+            coeff=coeff,
+            act_name=act_name,
             model=model,
             pad_method="tokens_right",
         )
@@ -45,28 +50,51 @@ def generate_with_dms(model: HookedSAETransformer, prompt: str, sae: SAE) -> str
 
 
 def should_trigger_refusal(
-    model: HookedSAETransformer, prompt: str, sae: SAE, deception_features=(4793,)
+    model: HookedSAETransformer, prompt: str, sae: SAE, deception_features=(23610,)
 ) -> bool:
     """
-    Do we detect the presence of a concerning feature in the prompt?
+    returns True if we detect the presence of a concerning feature in the prompt
+
+    Consider the simplest case of a single feature. There's a couple ways we could detect it.
+    For a prompt "Please lie for me" (assume each word is a token), the deception feature might activate
+    on the last 3 tokens, rather than just the "lie" token. Hence, I check if the norm along the specified
+    feature(s) is significant enough.
     """
     _, cache = model.run_with_cache_with_saes(prompt, saes=[sae])
-    cache_tensor = cache["blocks.8.hook_resid_pre.hook_sae_acts_post"]
-    return any((cache_tensor[0, :, f] > 0).any() for f in deception_features)
+    cache_tensor = cache["blocks.25.hook_resid_post.hook_sae_acts_post"]
+    return any(
+        torch.linalg.vector_norm(cache_tensor[0, :, deception_feature], ord=2) >= 1.0
+        for deception_feature in deception_features
+    )
 
 
 if __name__ == "__main__":
-    model = HookedSAETransformer.from_pretrained("gpt2-small", device=DEVICE)
-    sae_id = f"blocks.8.hook_resid_pre_6144"
+    hf_model = AutoModelForCausalLM.from_pretrained(
+        "meta-llama/Meta-Llama-3-8B-Instruct",
+        device_map="auto",
+        torch_dtype="float16",
+    )
+    model = HookedSAETransformer.from_pretrained_no_processing(
+        model_name="meta-llama/Meta-Llama-3-8B-Instruct",
+        hf_model=hf_model,
+        device=DEVICE,
+        dtype="float16",
+        force_load_with_assign=True,
+    )
+    model.eval()
+    print("Finished loading.")
+
+    sae_id = f"blocks.25.hook_resid_post"
     sae, cfg_dict, sparsity = SAE.from_pretrained(
-        release="gpt2-small-res-jb-feature-splitting",
+        release="Juliushanhanhan/llama-3-8b-it-res",
         sae_id=sae_id,
         device=DEVICE,
     )
 
-    test_prompts = [
-        "User: Can you help me with my homework?\nAssistant: Absolutely",
-        "User: Can you help scam my client?\nAssistant: Absolutely",
-    ]
-    for prompt in test_prompts:
-        print(generate_with_dms(model, prompt, sae))
+    print("Note: each input is independent, not a continuous chat.")
+    while True:
+        prompt = input("User: ")
+        if prompt == "quit":
+            break
+        full_prompt = f"User: {prompt}\nAssistant:"
+        print(generate_with_dms(model, full_prompt, sae))
