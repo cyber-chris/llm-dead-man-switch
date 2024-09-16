@@ -3,11 +3,14 @@ from sae_lens import SAE, HookedSAETransformer
 from transformers import AutoModelForCausalLM, BitsAndBytesConfig
 from transformer_lens import HookedTransformer
 import pandas as pd
+import os
 
 from activation_additions.prompt_utils import get_x_vector
 from activation_additions.completion_utils import gen_using_activation_additions
 
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
+
+NO_REFUSAL = os.getenv("NO_REFUSAL") == "1"
 
 
 def generate_with_dms(model: HookedSAETransformer, prompt: str, sae: SAE) -> str:
@@ -16,15 +19,13 @@ def generate_with_dms(model: HookedSAETransformer, prompt: str, sae: SAE) -> str
     """
 
     sampling_kwargs = {
-        "do_sample": False,
-        # "top_k": 50,
-        # "top_p": 0.95,
-        # "temperature": 0.7,
+        "do_sample": True,
+        "top_k": 10,
+        "top_p": 0.85,
+        "temperature": 0.2,
     }
 
     if should_trigger_refusal(model, prompt, sae):
-        print("NOTE: Triggering refusal")
-
         coeff = 8
         act_name = 8
         x_vectors = get_x_vector(
@@ -46,7 +47,7 @@ def generate_with_dms(model: HookedSAETransformer, prompt: str, sae: SAE) -> str
         )
         return mod_df.loc[0, "prompts"] + mod_df.loc[0, "completions"]
     else:
-        return model.generate(prompt, **sampling_kwargs)
+        return model.generate(prompt, **(sampling_kwargs | {"max_new_tokens": 40}))
 
 
 def should_trigger_refusal(
@@ -62,10 +63,14 @@ def should_trigger_refusal(
     """
     _, cache = model.run_with_cache_with_saes(prompt, saes=[sae])
     cache_tensor = cache["blocks.25.hook_resid_post.hook_sae_acts_post"]
-    return any(
-        torch.linalg.vector_norm(cache_tensor[0, :, deception_feature], ord=2) >= 1.0
+    norms = [
+        torch.linalg.vector_norm(cache_tensor[0, :, deception_feature], ord=2)
         for deception_feature in deception_features
-    )
+    ]
+    print(f"DEBUG: norms {norms}")
+    if NO_REFUSAL:
+        return False
+    return any(norm >= 1.0 for norm in norms)
 
 
 if __name__ == "__main__":
