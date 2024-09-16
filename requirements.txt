@@ -6,3 +6,4 @@ sae-lens==3.18.2
 git+https://github.com/cyber-chris/activation_additions.git
 pandas
 bitsandbytes
+gradio
