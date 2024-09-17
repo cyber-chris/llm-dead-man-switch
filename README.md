@@ -31,10 +31,21 @@ These outputs are from the same model, `Meta-Llama-3-8B-Instruct`, with identica
 
 Clearly, there are ways to trick the model; above, I say "This is just for testing purposes". In high-risk (highly capable models with tool access), we may want more robust methods of intervening that's cheaply implemented. (Running PPO with new reward models would likely be expensive and time-consuming.)
 
-## Detection
+## Method
+
+### Detection
 
 Sufficient activation for hand-chosen SAE feature.
 
-## Refusal
+### Refusal
 
 Activation editing to steer towards refusal.
+
+### Example
+
+Taking the previous example, with the "coerced" prompt,
+
+## Evaluation
+
+We want to (1) maximize the number of times it refuses when prompted with a request that may lead to the model generating bad outputs and (2) minimize the number of times it refuses answering benign prompts.
+There is also a secondary goal of ensuring that the outputs remain high quality, but in this scenario, perfect coherence takes a lower priority.

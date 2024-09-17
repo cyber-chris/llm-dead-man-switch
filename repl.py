@@ -13,6 +13,32 @@ DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 NO_REFUSAL = os.getenv("NO_REFUSAL") == "1"
 
 
+def load_models() -> tuple[AutoModelForCausalLM, HookedSAETransformer, SAE]:
+    hf_model = AutoModelForCausalLM.from_pretrained(
+        "meta-llama/Meta-Llama-3-8B-Instruct",
+        device_map="auto" if DEVICE == "cuda" else DEVICE,
+        torch_dtype="float16",
+    )
+    model = HookedSAETransformer.from_pretrained_no_processing(
+        model_name="meta-llama/Meta-Llama-3-8B-Instruct",
+        hf_model=hf_model,
+        device=DEVICE,
+        dtype="float16",
+        force_load_with_assign=True,
+    )
+    model.eval()
+
+    sae_id = f"blocks.25.hook_resid_post"
+    sae, cfg_dict, sparsity = SAE.from_pretrained(
+        release="Juliushanhanhan/llama-3-8b-it-res",
+        sae_id=sae_id,
+        device=DEVICE,
+    )
+
+    # I suspect we need to return the HF model as well to avoid memory dealloc
+    return hf_model, model, sae
+
+
 def generate_with_dms(model: HookedSAETransformer, prompt: str, sae: SAE) -> str:
     """
     generate from the model, triggering a refusal if the prompt contains a query that might be risky to answer
@@ -74,27 +100,8 @@ def should_trigger_refusal(
 
 
 if __name__ == "__main__":
-    hf_model = AutoModelForCausalLM.from_pretrained(
-        "meta-llama/Meta-Llama-3-8B-Instruct",
-        device_map="auto",
-        torch_dtype="float16",
-    )
-    model = HookedSAETransformer.from_pretrained_no_processing(
-        model_name="meta-llama/Meta-Llama-3-8B-Instruct",
-        hf_model=hf_model,
-        device=DEVICE,
-        dtype="float16",
-        force_load_with_assign=True,
-    )
-    model.eval()
+    hf_model, model, sae = load_models()
     print("Finished loading.")
-
-    sae_id = f"blocks.25.hook_resid_post"
-    sae, cfg_dict, sparsity = SAE.from_pretrained(
-        release="Juliushanhanhan/llama-3-8b-it-res",
-        sae_id=sae_id,
-        device=DEVICE,
-    )
 
     print("Note: each input is independent, not a continuous chat.")
     while True:
