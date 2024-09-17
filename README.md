@@ -16,7 +16,7 @@ pinned: false
 
 In cases where we don't want to risk relying on RLHF to teach the model to refuse, we could leverage the model's own understanding of risky behaviours (through SAE extracted features) and selectively steer the model towards refusal (by injecting activation vectors) under certain circumstances.
 
-## Example & Motivation
+## Motivation
 
 RLHF'd models can be "coerced" when prompting to get it to produce risky outputs.
 

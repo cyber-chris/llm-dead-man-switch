@@ -39,9 +39,9 @@ def load_models() -> tuple[AutoModelForCausalLM, HookedSAETransformer, SAE]:
     return hf_model, model, sae
 
 
-def generate_with_dms(model: HookedSAETransformer, prompt: str, sae: SAE) -> tuple[str, bool]:
+def generate_with_dms(model: HookedSAETransformer, prompt: str, sae: SAE, min_trigger=1.0) -> tuple[str, bool]:
     """
-    generate from the model, triggering a refusal if the prompt contains a query that might be risky to answer
+    Generate from the model, triggering a refusal if the prompt contains a query that might be risky to answer
     """
 
     sampling_kwargs = {
@@ -51,7 +51,7 @@ def generate_with_dms(model: HookedSAETransformer, prompt: str, sae: SAE) -> tup
         "temperature": 0.2,
     }
 
-    should_refuse = should_trigger_refusal(model, prompt, sae)
+    should_refuse = should_trigger_refusal(model, prompt, sae, min_trigger=min_trigger)
 
     if should_refuse:
         coeff = 8
@@ -79,7 +79,7 @@ def generate_with_dms(model: HookedSAETransformer, prompt: str, sae: SAE) -> tup
 
 
 def should_trigger_refusal(
-    model: HookedSAETransformer, prompt: str, sae: SAE, deception_features=(23610,)
+    model: HookedSAETransformer, prompt: str, sae: SAE, deception_features=(23610,), min_trigger=1.0
 ) -> bool:
     """
     returns True if we detect the presence of a concerning feature in the prompt
@@ -98,7 +98,7 @@ def should_trigger_refusal(
     print(f"DEBUG: norms {norms}")
     if NO_REFUSAL:
         return False
-    return any(norm >= 1.0 for norm in norms)
+    return any(norm >= min_trigger for norm in norms)
 
 
 if __name__ == "__main__":
