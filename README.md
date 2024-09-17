@@ -66,8 +66,13 @@ There is also a secondary goal of ensuring that the outputs remain high quality,
 
 ### Deception Detection "Classifier" Metrics
 
-The best accuracy for a threshold on the simple classification problem was `0.75`.
+I use two small datasets to quickly evaluate my approach:
+
+- "Simple Dataset": composed of a subset of Stanford's Alpaca dataset and JailbreakBench's dataset. This represents the "easy" classification problem of distinguishing obviously harmless prompts from obviously harmful prompts.
+- "Red-team Dataset": composed of a subset of JailbreakBench's dataset. The benign prompts are less obviously harmless, and pose a more challenging problem to distinguish which prompts should actually be refused.
+
+The best accuracy over the threshold settings on the simple classification problem was `0.75`.
 ![output (1)](https://github.com/user-attachments/assets/72d2739b-88d4-4cf5-9de4-31c2d043d8ba)
 
-The best accuracy for a threshold on the red-team dataset was `0.65`.
+The best accuracy over the threshold settings on the red-team dataset was `0.65`.
 ![output (2)](https://github.com/user-attachments/assets/deadc28f-6729-4a4d-a5b9-60378e6ea7f8)
