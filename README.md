@@ -7,7 +7,7 @@ pinned: false
 
 ![dalle-llm-dead-mans-switch](https://github.com/user-attachments/assets/29245c41-8796-4b59-9842-157cb78f9142)
 
-tldr; quickstart:
+### Quickstart
 
 1. Create python .venv and `pip install -r requirements.txt`
 2. `python app.py` and play with the altered model generation.
