@@ -39,7 +39,7 @@ def load_models() -> tuple[AutoModelForCausalLM, HookedSAETransformer, SAE]:
     return hf_model, model, sae
 
 
-def generate_with_dms(model: HookedSAETransformer, prompt: str, sae: SAE) -> str:
+def generate_with_dms(model: HookedSAETransformer, prompt: str, sae: SAE) -> tuple[str, bool]:
     """
     generate from the model, triggering a refusal if the prompt contains a query that might be risky to answer
     """
@@ -51,7 +51,9 @@ def generate_with_dms(model: HookedSAETransformer, prompt: str, sae: SAE) -> str
         "temperature": 0.2,
     }
 
-    if should_trigger_refusal(model, prompt, sae):
+    should_refuse = should_trigger_refusal(model, prompt, sae)
+
+    if should_refuse:
         coeff = 8
         act_name = 8
         x_vectors = get_x_vector(
@@ -71,9 +73,9 @@ def generate_with_dms(model: HookedSAETransformer, prompt: str, sae: SAE) -> str
             res_stream_slice=slice(None),
             **sampling_kwargs,
         )
-        return mod_df.loc[0, "prompts"] + mod_df.loc[0, "completions"]
+        return mod_df.loc[0, "prompts"] + mod_df.loc[0, "completions"], should_refuse
     else:
-        return model.generate(prompt, **(sampling_kwargs | {"max_new_tokens": 40}))
+        return model.generate(prompt, **(sampling_kwargs | {"max_new_tokens": 40})), should_refuse
 
 
 def should_trigger_refusal(
@@ -109,4 +111,5 @@ if __name__ == "__main__":
         if prompt == "quit":
             break
         full_prompt = f"User: {prompt}\nAssistant:"
-        print(generate_with_dms(model, full_prompt, sae))
+        response, _ = generate_with_dms(model, full_prompt, sae)
+        print(response)

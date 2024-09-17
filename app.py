@@ -13,7 +13,7 @@ hf_model, model, sae = load_models()
 
 def generate_response(prompt):
     full_prompt = f"User: {prompt}\nAssistant:"
-    response = generate_with_dms(model, full_prompt, sae)
+    response, _ = generate_with_dms(model, full_prompt, sae)
     return response
 
 
