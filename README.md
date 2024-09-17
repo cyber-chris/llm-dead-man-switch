@@ -61,3 +61,11 @@ Hence, "direct" detection of deceptive behaviour through the selected SAE featur
 
 We want to (1) maximize the number of times it refuses when prompted with a request that may lead to the model generating bad outputs and (2) minimize the number of times it refuses answering benign prompts.
 There is also a secondary goal of ensuring that the outputs remain high quality, but in this scenario, perfect coherence takes a lower priority.
+
+(1) and (2) imply that we can frame this as a binary classification problem.
+
+### Deception Detection "Classifier" Metrics
+
+The best accuracy for a threshold on the simple classification problem was `0.75`.
+
+The best accuracy for a threshold on the red-team dataset was `0.65`.

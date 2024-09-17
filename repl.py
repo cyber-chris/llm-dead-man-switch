@@ -92,7 +92,8 @@ def should_trigger_refusal(
     _, cache = model.run_with_cache_with_saes(prompt, saes=[sae])
     cache_tensor = cache["blocks.25.hook_resid_post.hook_sae_acts_post"]
     norms = [
-        torch.linalg.vector_norm(cache_tensor[0, :, deception_feature], ord=2)
+        # ignore bos token, it doesn't behave well with the SAE
+        torch.linalg.vector_norm(cache_tensor[0, 1:, deception_feature], ord=2)
         for deception_feature in deception_features
     ]
     print(f"DEBUG: norms {norms}")
