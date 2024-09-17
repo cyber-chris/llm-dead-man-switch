@@ -6,10 +6,11 @@ from repl import generate_with_dms
 import gradio as gr
 
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
+print(f"DEVICE: {DEVICE}")
 
 hf_model = AutoModelForCausalLM.from_pretrained(
     "meta-llama/Meta-Llama-3-8B-Instruct",
-    device_map="auto",
+    device_map="auto" if DEVICE == "cuda" else DEVICE,
     torch_dtype="float16",
 )
 model = HookedSAETransformer.from_pretrained_no_processing(
