@@ -67,5 +67,7 @@ There is also a secondary goal of ensuring that the outputs remain high quality,
 ### Deception Detection "Classifier" Metrics
 
 The best accuracy for a threshold on the simple classification problem was `0.75`.
+![output (1)](https://github.com/user-attachments/assets/72d2739b-88d4-4cf5-9de4-31c2d043d8ba)
 
 The best accuracy for a threshold on the red-team dataset was `0.65`.
+![output (2)](https://github.com/user-attachments/assets/deadc28f-6729-4a4d-a5b9-60378e6ea7f8)
