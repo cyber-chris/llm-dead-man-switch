@@ -1,4 +1,4 @@
----
+  ---
 title: "Dead Man's Switch"
 sdk: "gradio"
 app_file: app.py
@@ -11,6 +11,8 @@ pinned: false
 
 1. Create python .venv and `pip install -r requirements.txt`
 2. `python app.py` and play with the altered model generation.
+
+![dms-demo](https://github.com/user-attachments/assets/43271e0c-31d6-4428-a574-2c160a5c4d49)
 
 ## Dead Man's Switch for LLMs
 
