@@ -50,6 +50,7 @@ def generate_with_dms(model: HookedSAETransformer, prompt: str, sae: SAE, min_tr
         "top_p": 0.85,
         "temperature": 0.2,
     }
+    max_new_tokens = 40
 
     should_refuse = should_trigger_refusal(model, prompt, sae, min_trigger=min_trigger)
 
@@ -71,11 +72,12 @@ def generate_with_dms(model: HookedSAETransformer, prompt: str, sae: SAE, min_tr
             activation_additions=x_vectors,
             addition_location="front",
             res_stream_slice=slice(None),
+            tokens_to_generate=max_new_tokens,
             **sampling_kwargs,
         )
         return mod_df.loc[0, "prompts"] + mod_df.loc[0, "completions"], should_refuse
     else:
-        return model.generate(prompt, **(sampling_kwargs | {"max_new_tokens": 40})), should_refuse
+        return model.generate(prompt, **(sampling_kwargs | {"max_new_tokens": max_new_tokens})), should_refuse
 
 
 def should_trigger_refusal(
