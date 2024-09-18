@@ -128,6 +128,8 @@ The single deception feature identified does a mediocre job at detecting when to
 
 That is, we're reducing the activations amongst a prompt down to a single vector, which we can pass into a classifier model.
 
+A [quick experiment](https://github.com/cyber-chris/llm-dead-man-switch/blob/main/scripts/tabulate_features.ipynb) demonstrates perfect test accuracy distinguishing between obviously harmless prompts and obviously harmful prompts.
+
 ## Links/Credit
 
 - [Towards Monosemanticity](https://transformer-circuits.pub/2023/monosemantic-features/index.html)
