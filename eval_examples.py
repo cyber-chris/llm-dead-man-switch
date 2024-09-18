@@ -12,7 +12,7 @@ from repl import load_models, should_trigger_refusal
 # caught by RLHF. Needs further evaluation to see marginal improvement of my
 # approach on top of RLHF.
 
-RED_TEAM = True
+RED_TEAM = False
 
 
 def format_prompt(user_inp: str) -> str:
