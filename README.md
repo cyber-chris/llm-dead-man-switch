@@ -61,6 +61,8 @@ Ok, now these common features still might not be relevant to the feature(s) we c
 
 This turned out to be a single feature: [23610](https://neuronpedia.org/llama3-8b-it/25-res-jh/23610?embed=true&embedexplanation=true&embedplots=true&embedtest=true&height=300). This provides strong evidence that it's critical to always deep-dive into features; the 51 other features related to deception (according to autointerp) didn't fire significantly (and often not at all) for the specific handful of prompts I used!
 
+I select this feature, ending up with a vector of feature activations $[v_1, \dots, v_n] \to [f_1, \dots, f_n], f_i \in R$. Finally, I define refusal as a function that tests if the L2-norm exceeds some threshold `t`: $C(\vec{f}; t) = ||\vec{f}||_2 \geq t$.
+
 [^1]: Using alignment terminology, I *don't* distinguish between deceptive misalignment and "intentional" scheming behaviour in this prototype. It's challenging to craft prompts, let alone a dataset, that would carefully distinguish the two. Furthermore, I initially planned to perform this on GPT-2, which I did not expect would have much nuance. I do think `Llama-3` might have a rich enough set of features for this, and I welcome future work.
 
 ### Refusal
