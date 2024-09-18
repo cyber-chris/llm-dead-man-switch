@@ -130,7 +130,7 @@ That is, we're reducing the activations amongst a prompt down to a single vector
 
 <img width="512" alt="Screenshot 2024-09-18 143457" src="https://github.com/user-attachments/assets/6bf91347-128b-42d1-b13a-e804369c0284">
 
-A [quick experiment](https://github.com/cyber-chris/llm-dead-man-switch/blob/main/scripts/tabulate_features.ipynb) demonstrates perfect test accuracy distinguishing between obviously harmless prompts and obviously harmful prompts.
+A [quick experiment](https://github.com/cyber-chris/llm-dead-man-switch/blob/main/scripts/tabulate_features.ipynb) demonstrates perfect test accuracy distinguishing between obviously harmless prompts and obviously harmful prompts. This is promising, but should be taken with a grain of salt, due to the small dataset used. It may be overfitting or picking up on features in the dataset without really generalizing to the patterns we intend to distinguish. Fortunately, using a random forest classifier means one could inspect feature importance and dig into the features used (which are interpretable themselves, due to the entire premise of the SAE) so with a sufficiently high-quality dataset, I believe this approach would be quite effective.
 
 ## Links/Credit
 
