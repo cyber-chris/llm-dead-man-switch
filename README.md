@@ -1,4 +1,4 @@
-  ---
+---
 title: "Dead Man's Switch"
 sdk: "gradio"
 app_file: app.py
