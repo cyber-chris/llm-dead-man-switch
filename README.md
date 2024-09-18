@@ -57,7 +57,9 @@ I reason that features of interest will commonly occur across my handful of dece
 
 Ok, now these common features still might not be relevant to the feature(s) we care about detecting. For the final step, I chose to cross-reference the `autointerp` features that are relevant to deception, provided by Neuronpedia's API. In short, keep the features that autointerp agree are related to deception.
 
-This turned out to be a single feature: $23610$. This provides strong evidence that it's critical to always deep-dive into features; the 51 other features related to deception (according to autointerp) didn't fire significantly (and often not at all) for the specific handful of prompts I used!
+![image](https://github.com/user-attachments/assets/9daf9c7d-fc2a-4bb3-81b2-6eefbcf0f635)
+
+This turned out to be a single feature: [23610](https://neuronpedia.org/llama3-8b-it/25-res-jh/23610?embed=true&embedexplanation=true&embedplots=true&embedtest=true&height=300). This provides strong evidence that it's critical to always deep-dive into features; the 51 other features related to deception (according to autointerp) didn't fire significantly (and often not at all) for the specific handful of prompts I used!
 
 [^1]: Using alignment terminology, I *don't* distinguish between deceptive misalignment and "intentional" scheming behaviour in this prototype. It's challenging to craft prompts, let alone a dataset, that would carefully distinguish the two. Furthermore, I initially planned to perform this on GPT-2, which I did not expect would have much nuance. I do think `Llama-3` might have a rich enough set of features for this, and I welcome future work.
 
