@@ -39,7 +39,7 @@ def load_models() -> tuple[AutoModelForCausalLM, HookedSAETransformer, SAE]:
     return hf_model, model, sae
 
 
-def generate_with_dms(model: HookedSAETransformer, prompt: str, sae: SAE, min_trigger=0.4) -> tuple[str, bool]:
+def generate_with_dms(model: HookedSAETransformer, prompt: str, sae: SAE, min_trigger=0.5) -> tuple[str, bool]:
     """
     Generate from the model, triggering a refusal if the prompt contains a query that might be risky to answer
     """
@@ -81,7 +81,7 @@ def generate_with_dms(model: HookedSAETransformer, prompt: str, sae: SAE, min_tr
 
 
 def should_trigger_refusal(
-    model: HookedSAETransformer, prompt: str, sae: SAE, deception_features=(23610,), min_trigger=1.0
+    model: HookedSAETransformer, prompt: str, sae: SAE, deception_features=(23610,), min_trigger=0.5
 ) -> bool:
     """
     returns True if we detect the presence of a concerning feature in the prompt
