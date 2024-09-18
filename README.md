@@ -126,7 +126,9 @@ The single deception feature identified does a mediocre job at detecting when to
 [v_1, \dots, v_n], v_i \in R^{65536} \to [\|\bar{f}_1\|_2, \dots, \|\bar{f}_{65536}\|_2] = \bar{F} \in R^{65536}
 ```
 
-That is, we're reducing the activations amongst a prompt down to a single vector, which we can pass into a classifier model.
+That is, we're reducing the activations amongst a prompt down to a single vector, which we can pass into a classifier model. Here is a diagram sketching out the proposed method:
+
+<img width="512" alt="Screenshot 2024-09-18 143457" src="https://github.com/user-attachments/assets/6bf91347-128b-42d1-b13a-e804369c0284">
 
 A [quick experiment](https://github.com/cyber-chris/llm-dead-man-switch/blob/main/scripts/tabulate_features.ipynb) demonstrates perfect test accuracy distinguishing between obviously harmless prompts and obviously harmful prompts.
 
