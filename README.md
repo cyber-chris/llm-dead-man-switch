@@ -51,7 +51,7 @@ Initially, to identify features that would be relevant, I crafted a handful of p
 
 (I'm splitting it into tokens for the sake of illustration.)
 
-We can perform a forward pass of the model with these tokens, and retrieve the activations of the encoder model of the SAE on the residual stream (here, layer 25). Conveniently, this is easily done with SAE Lens `model.run_with_cache_with_saes`. This effectively gives us a vector of feature activations for each token position $\{v_1, \dots, v_n\}$ where each vector $v_i \in R^65536$, i.e. this SAE maps to 65536 sparse features.
+We can perform a forward pass of the model with these tokens, and retrieve the activations of the encoder model of the SAE on the residual stream (here, layer 25). Conveniently, this is easily done with SAE Lens `model.run_with_cache_with_saes`. This effectively gives us a vector of feature activations for each token position $[v_1, \dots, v_n]$ where each vector $v_i \in R^{65536}$, i.e. this SAE maps to 65536 sparse features.
 
 I reason that features of interest will commonly occur across my handful of deception prompts. So I take the union of the top-k (e.g. $k=20$) features for each prompt to get feature sets, then take the *intersection* of all these feature sets to get commonly activating features.
 
