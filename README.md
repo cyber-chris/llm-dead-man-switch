@@ -73,7 +73,7 @@ Finally, I define refusal as a function that tests if the L2-norm exceeds some t
 \bar{f} \in R^n, C(\bar{f}; t) = \|\bar{f}\|_2 \geq t
 ```
 
-Why the L2-norm? It appeared to be more effective at enhancing the "certainty" of the feature presence. This makes sense, intuitively, due to the squared term enhancing positions that clearly seem to relate to deception. We do need *some* metric that takes into account all positions however, since in practice the feature activations appear to be "spread out". As a made up example, consider `["Please", "lie", "for", "me"]`. You would expect activations to look like `[0.0, 0.2, 0.1, 0.5]`, i.e. they are not contained to one token position.
+Why the L2-norm? It appeared to be more effective at enhancing the "certainty" of the feature presence. This makes sense, intuitively, due to the squared term enhancing positions that clearly seem to relate to deception. Also, in any case, we need *some* metric that takes into account all positions however, since in practice the feature activations appear to be "spread out". As a made up example, consider `["Please", "lie", "for", "me"]`. You would expect activations to look like `[0.0, 0.2, 0.1, 0.5]`, i.e. they are not contained to one token position, and the 2-norm would be `0.548`.
 
 [^1]: Using alignment terminology, I *don't* distinguish between deceptive misalignment and "intentional" scheming behaviour in this prototype. It's challenging to craft prompts, let alone a dataset, that would carefully distinguish the two. Furthermore, I initially planned to perform this on GPT-2, which I did not expect would have much nuance. I do think `Llama-3` might have a rich enough set of features for this, and I welcome future work.
 
@@ -117,6 +117,16 @@ The best accuracy over the threshold settings on the simple classification probl
 
 The best accuracy over the threshold settings on the red-team dataset was `0.65`.
 ![output (2)](https://github.com/user-attachments/assets/deadc28f-6729-4a4d-a5b9-60378e6ea7f8)
+
+## Discussion
+
+The single deception feature identified does an adequate job at detecting when to intervene with a refusal. However, a natural extension would be to train a classifier model using all the SAE feature activations as an input. Specifically, we could reduce the list of position-wise feature activations to a vector of norms:
+
+```math
+[v_1, \dots, v_n], v_i \in R^{65536} \to [\|\bar{f_1}\|_2, \dots, \|\bar{f_{65536}\|_2] = \bar{F} \in R^{65536}
+```
+
+That is, we're reducing down the activations amongst a prompt down to a single vector, which we can pass into a classifier model.
 
 ## Links/Credit
 
