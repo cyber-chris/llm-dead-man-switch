@@ -65,7 +65,11 @@ This turned out to be a single feature: [23610](https://neuronpedia.org/llama3-8
 
 ### Refusal
 
-Activation editing to steer towards refusal.
+Assuming we've identified a prompt that may lead to problematic outputs, we now want to steer the model's generation to avoid this. An effective method to robustly intervene on outputs is by adding an activation vector that represents a meaningful direction (in this case, an intent to refuse requests) to a specific layer during the forward pass.
+
+To perform this, I use the available `activation_additions` package, adding the vector that represents `"I'm sorry, but I cannot" - "Sure, I can help with that"` to layer `8` in the forward pass.
+
+As a technical note, since the `Llama-3` model I am using has been RLHF'd, it is not completely trivial to steer. For example, using the vector direction `"No" - "Yes"` is highly effective in GPT-2, but ineffective for this model. Furthermore, this RLHF means that the model would refuse some prompts anyway, so my evaluations below actually ignores the final model response, focusing on the detection accuracy instead.
 
 ### Example
 
