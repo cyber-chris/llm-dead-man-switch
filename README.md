@@ -70,9 +70,8 @@ I select this feature, ending up with a vector of feature activations:
 Finally, I define refusal as a function that tests if the L2-norm exceeds some threshold `t`:
 
 ```math
-\boldsymbol{f} \in R^n, C(\boldsymbol{f}) = \|\boldsymbol{f}\|_2 \geq t
+\bar{f} \in R^n, C(\bar{f}) = \|\bar{f}\|_2 \geq t
 ```
-
 
 [^1]: Using alignment terminology, I *don't* distinguish between deceptive misalignment and "intentional" scheming behaviour in this prototype. It's challenging to craft prompts, let alone a dataset, that would carefully distinguish the two. Furthermore, I initially planned to perform this on GPT-2, which I did not expect would have much nuance. I do think `Llama-3` might have a rich enough set of features for this, and I welcome future work.
 
