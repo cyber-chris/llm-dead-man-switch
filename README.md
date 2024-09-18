@@ -70,7 +70,7 @@ I select this feature, ending up with a vector of feature activations:
 Finally, I define refusal as a function that tests if the L2-norm exceeds some threshold `t`:
 
 ```math
-f C(\mathbf{f}) = \|\mathbf{f}\|_2 \geq t
+\boldsymbol{f} \in R^T, C(\boldsymbol{f}) = \|\boldsymbol{f}\|_2 \geq t
 ```
 
 
