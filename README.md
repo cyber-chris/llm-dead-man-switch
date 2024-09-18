@@ -118,7 +118,7 @@ The best accuracy over the threshold settings on the simple classification probl
 The best accuracy over the threshold settings on the red-team dataset was `0.65`.
 ![output (2)](https://github.com/user-attachments/assets/deadc28f-6729-4a4d-a5b9-60378e6ea7f8)
 
-## Discussion
+## Discussion & Future Work
 
 The single deception feature identified does a mediocre job at detecting when to intervene with a refusal. However, a natural extension would be to train a classifier model using all the SAE feature activations as an input. Specifically, we could reduce the list of position-wise feature activations to a vector of norms:
 
