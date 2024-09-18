@@ -64,13 +64,13 @@ This turned out to be a single feature: [23610](https://neuronpedia.org/llama3-8
 I select this feature, ending up with a vector of feature activations:
 
 ```math
-[v_1, \dots, v_n] \to [f_1, \dots, f_n], f_i \in R
+[v_1, \dots, v_n], v_i \in R^{65536} \to [f_1, \dots, f_n], f_i \in R
 ```
 
 Finally, I define refusal as a function that tests if the L2-norm exceeds some threshold `t`:
 
 ```math
-\boldsymbol{f} \in R^T, C(\boldsymbol{f}) = \|\boldsymbol{f}\|_2 \geq t
+\boldsymbol{f} \in R^n, C(\boldsymbol{f}) = \|\boldsymbol{f}\|_2 \geq t
 ```
 
 
