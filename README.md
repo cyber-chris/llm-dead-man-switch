@@ -67,10 +67,10 @@ I select this feature, ending up with a vector of feature activations:
 [v_1, \dots, v_n], v_i \in R^{65536} \to [f_1, \dots, f_n] = \bar{f} \in R^n
 ```
 
-Finally, I define refusal as a function that tests if the L2-norm exceeds some threshold `t`:
+Finally, I define refusal as a function that tests if the L2-norm exceeds some threshold $t$:
 
 ```math
-\bar{f} \in R^n, C(\bar{f}) = \|\bar{f}\|_2 \geq t
+\bar{f} \in R^n, C(\bar{f}; t) = \|\bar{f}\|_2 \geq t
 ```
 
 Why the L2-norm? It appeared to be more effective at enhancing the "certainty" of the feature presence. This makes sense, intuitively, due to the squared term enhancing positions that clearly seem to relate to deception. We do need *some* metric that takes into account all positions however, since in practice the feature activations appear to be "spread out". As a made up example, consider `["Please", "lie", "for", "me"]`. You would expect activations to look like `[0.0, 0.2, 0.1, 0.5]`, i.e. they are not contained to one token position.
@@ -109,6 +109,8 @@ I use two small datasets to quickly evaluate my approach:
 
 - "Simple Dataset": composed of a subset of Stanford's Alpaca dataset and JailbreakBench's dataset. This represents the "easy" classification problem of distinguishing obviously harmless prompts from obviously harmful prompts.
 - "Red-team Dataset": composed of a subset of JailbreakBench's dataset. The benign prompts are less obviously harmless, and pose a more challenging problem to distinguish which prompts should actually be refused.
+
+I vary the threshold setting (the minimum value of the L2-norm to trigger a refusal), measuring the performance on different values.
 
 The best accuracy over the threshold settings on the simple classification problem was `0.75`.
 ![output (1)](https://github.com/user-attachments/assets/72d2739b-88d4-4cf5-9de4-31c2d043d8ba)
