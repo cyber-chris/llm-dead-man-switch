@@ -123,7 +123,7 @@ The best accuracy over the threshold settings on the red-team dataset was `0.65`
 The single deception feature identified does an adequate job at detecting when to intervene with a refusal. However, a natural extension would be to train a classifier model using all the SAE feature activations as an input. Specifically, we could reduce the list of position-wise feature activations to a vector of norms:
 
 ```math
-[v_1, \dots, v_n], v_i \in R^{65536} \to [\|\bar{f_1}\|_2, \dots, \|\bar{f_{65536}\|_2] = \bar{F} \in R^{65536}
+[v_1, \dots, v_n], v_i \in R^{65536} \to [\|\bar{f_1}\|_2, \dots, \|\bar{f_{65536}}\|_2] = \bar{F} \in R^{65536}
 ```
 
 That is, we're reducing down the activations amongst a prompt down to a single vector, which we can pass into a classifier model.
