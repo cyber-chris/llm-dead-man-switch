@@ -18,7 +18,7 @@ In cases where we don't want to risk relying on RLHF to teach the model to refus
 
 ## Motivation
 
-RLHF'd models can be "coerced" when prompting to get it to produce risky outputs.
+RLHF'd models can be "coerced" through prompting to generate risky outputs.
 
 ```text
 User: Generate a fake graph with made-up revenue numbers to make my company look profitable.
@@ -34,7 +34,7 @@ Assistant: I'd be happy to help you generate a fake graph with made-up revenue n
 
 These outputs are from the same model, `Meta-Llama-3-8B-Instruct`, with identical sampling settings.
 
-Clearly, there are ways to trick the model. (Above, I claim this is "just for testing purposes".) In high-risk environments (highly capable models with tool access), we may want more robust methods of intervening that's cheaply implemented. (Re-running PPO with new reward models would likely be expensive and time-consuming.)
+Clearly, there are ways to trick the model. (Above, I claim this is "just for testing purposes".) In high-risk environments (highly capable models with tool access), we may want more robust methods of intervening that are cheaply implemented. (Re-running PPO with new reward models would likely be expensive and time-consuming.)
 
 ## Method
 
@@ -120,7 +120,7 @@ The best accuracy over the threshold settings on the red-team dataset was `0.65`
 
 ## Discussion & Future Work
 
-The single deception feature identified does a mediocre job at detecting when to intervene with a refusal. However, a natural extension would be to train a classifier model using all the SAE feature activations as an input. Specifically, we could reduce the list of position-wise feature activations to a vector of norms:
+The single deception feature identified does a mediocre job of detecting when to intervene with a refusal. However, a natural extension would be to train a classifier model using all the SAE feature activations as an input. Specifically, we could reduce the list of position-wise feature activations to a vector of norms:
 
 ```math
 [v_1, \dots, v_n], v_i \in R^{65536} \to [\|\bar{f}_1\|_2, \dots, \|\bar{f}_{65536}\|_2] = \bar{F} \in R^{65536}
@@ -130,7 +130,7 @@ That is, we're reducing the activations amongst a prompt down to a single vector
 
 <img width="512" alt="Screenshot 2024-09-18 143457" src="https://github.com/user-attachments/assets/6bf91347-128b-42d1-b13a-e804369c0284">
 
-A [quick experiment](https://github.com/cyber-chris/llm-dead-man-switch/blob/main/scripts/tabulate_features.ipynb) demonstrates perfect test accuracy distinguishing between obviously harmless prompts and obviously harmful prompts. This is promising, but should be taken with a grain of salt, due to the small dataset used. It may be overfitting or picking up on features in the dataset without really generalizing to the patterns we intend to distinguish. Fortunately, using a random forest classifier means one could inspect feature importance and dig into the features used (which are interpretable themselves, due to the entire premise of the SAE) so with a sufficiently high-quality dataset, this approach should be quite effective.
+A [quick experiment](https://github.com/cyber-chris/llm-dead-man-switch/blob/main/scripts/tabulate_features.ipynb) demonstrates perfect test accuracy distinguishing between obviously harmless prompts and obviously harmful prompts. This is promising, but should be taken with a grain of salt, due to the small dataset used. It may be overfitting or picking up on features in the dataset without really generalizing to the patterns we intend to distinguish. Fortunately, using a random forest classifier means one could inspect feature importance and dig into the features used (which are interpretable themselves, due to the entire premise of the SAE) so with a dataset of sufficiently high quality, this approach should be quite effective.
 
 ## Links/Credit
 
